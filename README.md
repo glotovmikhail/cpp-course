@@ -1,3 +1,0 @@
-# cpp-course
-cpp
-kek
