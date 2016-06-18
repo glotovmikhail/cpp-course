@@ -263,7 +263,7 @@ big_integer big_integer::operator-() const {
 
 std::ostream& operator<<(ostream &stream, const big_integer &v) {
     if (v.sign == -1) stream << '-';
-    int32_t new_base = 1000 * 1000 * 1000;
+    int32_t new_base = 1000000000;
     big_integer buf;
     big_integer cur(v.abs());
     while (cur > 0) {
@@ -289,7 +289,7 @@ big_integer& big_integer::operator*=(big_integer const& rhs) {
     c.numbers.resize(numbers.size() + rhs.numbers.size());
     for (int32_t i = 0; i < numbers.size(); i++)
         for (int32_t j = 0, carry = 0; j < rhs.numbers.size() || carry; ++j) {
-            int64_t cur = c.numbers[i + j] + numbers[i] * 1ll* (j < rhs.numbers.size() ? rhs.numbers[j] : 0) + carry;
+            int64_t cur = c.numbers[i + j] + numbers[i] * (int64_t) (j < rhs.numbers.size() ? rhs.numbers[j] : 0) + carry;
             c.numbers[i + j] = int32_t(cur % base);
             carry = int32_t(cur / base);
     }
