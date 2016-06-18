@@ -23,7 +23,7 @@ void big_integer::clear_zeroes() {
 
 big_integer::big_integer() : sign(1), numbers() { }
 
-big_integer::big_integer(big_integer const& other) : sign(other.sign), numbers(other.numbers) { }
+big_integer::big_integer(big_integer const& other) : numbers(other.numbers), sign(other.sign) { }
 
 big_integer::big_integer(int a) {
     int64_t b = a;
@@ -86,7 +86,7 @@ big_integer& big_integer::operator+=(big_integer const& rhs) {
         }
         *this = res;
     } else {
-        *this -= -rhs;
+        *this -= -rhs; 
     }
     return *this;
 }
