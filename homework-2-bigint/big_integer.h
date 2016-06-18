@@ -57,8 +57,6 @@ private:
 
     void clear_zeroes();
     big_integer abs() const;
-    //friend void docheck(const big_integer &a, const big_integer &b, big_integer &dv, big_integer &md);
-    //friend void divmod(const big_integer &a1, const big_integer &b1, big_integer &dv, big_integer &md);
 	friend big_integer divide(const big_integer &a1, const big_integer &b1);
     int operator%(int32_t v);
 
