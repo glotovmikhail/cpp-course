@@ -144,12 +144,11 @@ overflowChecking<T> operator-(overflowChecking<T> const& left, overflowChecking<
 //--------
 template<typename T>
 overflowChecking<T> mul_impl(overflowChecking<T> const& left, overflowChecking<T> const& right, signed_tag) {
-	if (left.value != 0 && right.value != 0 && ((left.value == -1 && right.value == numeric_limits<T>::min())
-		|| (right.value == -1 && left.value == numeric_limits<T>::min())
-		|| (right.value / abs(right.value) == left.value / abs(left.value) &&
-			abs(right.value) > numeric_limits<T>::max() / abs(left.value))
-		|| (right.value / abs(right.value) != left.value / abs(left.value) &&
-			right.value > numeric_limits<T>::min() / left.value))) {
+	if (left.value != 0 && right.value != 0 &&
+		(((right.value == -1) && (left.value == numeric_limits<T>::min())) 
+			|| ((left.value == -1) && (right.value == numeric_limits<T>::min()))
+			|| (abs(left.value) > numeric_limits<T>::max() / abs(right.value)))) {
+
 		throw overflow_exception("singed numbers multiply overflow \n");
 	}
 	return overflowChecking<T>(left.value * right.value);
@@ -196,6 +195,7 @@ int main() {
 			overflowChecking<type> b(numeric_limits<type>::min());
 			a + b;
 			//a - b;
+			a * b;
 			b / a;
 			-a;
 			a = b;
