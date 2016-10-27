@@ -144,8 +144,8 @@ overflowChecking<T> operator-(overflowChecking<T> const& left, overflowChecking<
 //--------
 template<typename T>
 overflowChecking<T> mul_impl(overflowChecking<T> const& left, overflowChecking<T> const& right, signed_tag) {
-	if (left.value != 0 && right.value != 0 &&
-		(((right.value == -1) && (left.value == numeric_limits<T>::min())) 
+	if ((left.value * right.value != numeric_limits<T>::min()) && left.value != 0 && right.value != 0 && 
+	    (((right.value == -1) && (left.value == numeric_limits<T>::min())) 
 			|| ((left.value == -1) && (right.value == numeric_limits<T>::min()))
 			|| (abs(left.value) > numeric_limits<T>::max() / abs(right.value)))) {
 
