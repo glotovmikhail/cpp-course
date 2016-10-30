@@ -1,6 +1,7 @@
 #ifndef BIG_INTEGER_H
 #define BIG_INTEGER_H
 
+#include "my_vector.h"
 #include <string>
 #include <vector>
 
@@ -52,7 +53,7 @@ struct big_integer
     friend std::string to_string(big_integer const& a);
     friend std::ostream& operator<<(std::ostream& stream, big_integer const& v);
 private:
-    std::vector<int32_t> numbers;
+    my_vector numbers;
     int sign;
 
     void clear_zeroes();
