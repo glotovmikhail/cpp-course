@@ -2,134 +2,130 @@
 
 #include <vector>
 
-struct store {
-	store();
-	store(store const& x);
-	int cnt;
-	std::vector<int> vec;
-};
+using namespace std;
 
-
-my_vector::my_vector() : num(0), sz(0), st(nullptr) { }
-
-my_vector::~my_vector() {
-	if (st != nullptr) {
-		st->cnt--;
-		if (st->cnt == 0) delete st;
-	}
+void my_vector::cow_copy() {
+	if (store.unique()) return;
+	store = make_shared<vector<int64_t> >(*store);
 }
 
-void my_vector::copy() {
-	if (st == nullptr) {
-		return;
+void my_vector::copy_vector(my_vector const& vec) {
+	this->is_small_num = vec.is_small_num;
+	if (!is_small_num) {
+		this->store = vec.store;
 	}
-	if (st->cnt > 1) {
-		st->cnt--;
-		store *old = st;
-		st = new store(*old);
-		if (old->cnt == 0) {
-			delete old;
-		}
+	else {
+		this->num = vec.num;
 	}
+
 }
 
-void my_vector::push_back(int x) {
-	copy();
-	sz++;
-	if (sz == 1 && st == nullptr) num = x;
-	if (sz > 1 && st == nullptr) {
-		st = new store();
-		st->vec.push_back(num);
+
+int64_t& my_vector::operator[](size_t index) {
+	if (is_small_num) return num;
+	cow_copy();
+	return store->at(index);
+}
+
+const int64_t my_vector::operator[](size_t index) const {
+	if (is_small_num) return num;
+	return store->at(index);
+}
+
+my_vector::my_vector(my_vector const& vec) {
+	copy_vector(vec);
+}
+
+void my_vector::push_back(const int64_t& x) {
+	if (is_small_num == 1) {
+		store = make_shared<vector<int64_t>>();
+		store->push_back(num);
+		store->push_back(x);
+		is_small_num = 0;
 	}
-	if (st != nullptr) st->vec.push_back(x);
+	else if (is_small_num == 2)
+	{
+		is_small_num = 1;
+		num = x;
+	}
+	else {
+		cow_copy();
+		store->push_back(x);
+	}
+
 }
 
 void my_vector::pop_back() {
-	copy();
-	sz--;
-	if (st != nullptr) st->vec.pop_back();
+	if (is_small_num)
+		is_small_num = 2;
+	else
+	{
+		cow_copy();
+		store->pop_back();
+	}
 }
 
-int my_vector::back() const {
-	if (st == nullptr) return num; else return st->vec.back();
+size_t my_vector::back() const {
+	if (is_small_num) return num;
+	return store->back();
 }
 
-int my_vector::size() const {
-	return sz;
+size_t my_vector::size() const {
+	if (is_small_num == 1) return 1;
+	else if (is_small_num == 2) return 0;
+	return store->size();
 }
 
-void my_vector::resize(int x) {
-	copy();
-	if (x > 1 && st == nullptr) {
-		st = new store();
-		st->vec.resize(x);
-		if (sz == 1) (st->vec)[0] = num;
-		sz = x;
+void my_vector::resize(size_t x) {
+	if (is_small_num >= 2 && !x)
+	{
+		is_small_num = 2;
+		return;
 	}
-	if (x <= 1 && st == nullptr) {
-		sz = x;
+	if (is_small_num >= 1) {
+		if (x <= 1) return;
+		int64_t temp = num;
+		store = make_shared<vector<int64_t>>(x);
+		if (is_small_num == 1)
+			store->at(0) = temp;
+		is_small_num = 0;
+		return;
 	}
-	if (st != nullptr) {
-		st->vec.resize(x);
-	}
+	cow_copy();
+	store->resize(x);
 }
 
 bool my_vector::empty() const {
-	return (sz == 0);
+	if (is_small_num == 2 || (!is_small_num && !store->size())) return true;
+	return false;
 }
 
-int& my_vector::operator[](int x) {
-	copy();
-	if (st == nullptr) {
-		return num;
-	}
-	else {
-		return (st->vec)[x];
-	}
-}
-
-int my_vector::operator[](int x) const {
-	if (st == nullptr) {
-		return num;
-	}
-	else {
-		return (st->vec)[x];
-	}
-}
 
 void my_vector::clear() {
-	copy();
-	sz = 0;
-	num = 0;
-	if (st != nullptr) st->vec.clear();
+	if (!is_small_num)
+	{
+		cow_copy();
+		store->clear();
+	}
+	else if (is_small_num)
+		is_small_num = 2, num = 0;
 }
 
 my_vector& my_vector::operator=(my_vector const& other) {
-	num = other.num;
-	sz = other.sz;
-	if (st != nullptr) {
-		st->cnt--;
-		if (st->cnt == 0) delete st;
+	copy_vector(other);
+	return *this;
+}
+
+my_vector& my_vector::operator=(std::vector<int64_t> const& other) {
+	if (other.size() == 1) {
+		this->is_small_num = true;
+		this->num = other.at(0);
 	}
-	st = other.st;
-	if (other.st != nullptr) st->cnt++;
-	return *this;
-}
-
-my_vector& my_vector::operator=(std::vector<int> const& other) {
-	copy();
-	sz = other.size();
-	if (st != nullptr) st->vec = other; else
-		if (other.size() == 1) num = other[0]; else {
-			if (st == nullptr) st = new store();
-			st->vec = other;
+	else {
+		this->is_small_num = false;
+		for (size_t i = 0; i < other.size(); i++) {
+			this->store->at(i) = other.at(i);
 		}
+	}
 	return *this;
-}
-
-store::store() : cnt(1) { }
-
-store::store(store const& x) {
-	vec = x.vec;
-	cnt = 1;
 }

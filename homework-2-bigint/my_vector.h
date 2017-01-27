@@ -2,29 +2,35 @@
 #define MY_VECTOR_H
 
 #include <vector>
+#include <memory>
 
 struct store;
 
 struct my_vector {
-	my_vector();
-	~my_vector();
-	void push_back(int x);
+	my_vector() : num(0), is_small_num(2)
+	{ };
+	~my_vector()
+	{ };
+	my_vector(my_vector const& other);
+	void push_back(const int64_t&);
 	void pop_back();
-	int back() const;
-	int size() const;
-	void resize(int x);
+	size_t back() const;
+	size_t size() const;
+	void resize(size_t sz);
 	bool empty() const;
 	void clear();
-	int& operator[](int x);
-	int operator[](int x) const;
+	int64_t& operator[](size_t x);
+	const int64_t operator[](size_t x) const;
 	my_vector& operator=(my_vector const& other);
-	my_vector& operator=(std::vector<int> const& other);
+	my_vector& operator=(std::vector<int64_t> const& other);
 
 private:
-	int num;
-	int sz;
-	store* st;
-	void copy();
+	int64_t num;
+	int8_t is_small_num;
+	std::shared_ptr<std::vector<int64_t>> store;
+	void copy_vector(my_vector const& other);
+	void cow_copy();
+
 };
 
-#endif MY_VECTOR_H
+#endif //MY_VECTOR_H
