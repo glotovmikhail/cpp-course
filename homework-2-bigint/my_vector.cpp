@@ -96,7 +96,8 @@ void my_vector::resize(size_t x) {
 }
 
 bool my_vector::empty() const {
-	if (is_small_num == 2 || (!is_small_num && !store->size())) return true;
+	 if (is_small_num == 2 || (!is_small_num && !store->size())) return true;
+	// if (!size()) true;
 	return false;
 }
 
@@ -117,17 +118,8 @@ my_vector& my_vector::operator=(my_vector const& other) {
 }
 
 my_vector& my_vector::operator=(std::vector<int32_t> const& other) {
-	/* if (other.size() == 1) {
-		is_small_num = true;
-		num = other.at(0);
-	}
-	else {
-		is_small_num = false;
-		for (size_t i = 0; i < other.size(); i++) {
-			store->at(i) = other.at(i);
-		}
-	}
-	*/
-	*store = other;
+
+	store = make_shared<vector<int32_t>>(other);
+	
 	return *this;
 }
