@@ -6,7 +6,7 @@ using namespace std;
 
 void my_vector::cow_copy() {
 	if (store.unique()) return;
-	store = make_shared<vector<int64_t> >(*store);
+	store = make_shared<vector<int32_t> >(*store);
 }
 
 void my_vector::copy_vector(my_vector const& vec) {
@@ -21,13 +21,13 @@ void my_vector::copy_vector(my_vector const& vec) {
 }
 
 
-int64_t& my_vector::operator[](size_t index) {
+int32_t& my_vector::operator[](size_t index) {
 	if (is_small_num) return num;
 	cow_copy();
 	return store->at(index);
 }
 
-const int64_t my_vector::operator[](size_t index) const {
+const int32_t my_vector::operator[](size_t index) const {
 	if (is_small_num) return num;
 	return store->at(index);
 }
@@ -36,9 +36,9 @@ my_vector::my_vector(my_vector const& vec) {
 	copy_vector(vec);
 }
 
-void my_vector::push_back(const int64_t& x) {
+void my_vector::push_back(const int32_t& x) {
 	if (is_small_num == 1) {
-		store = make_shared<vector<int64_t>>();
+		store = make_shared<vector<int32_t>>();
 		store->push_back(num);
 		store->push_back(x);
 		is_small_num = 0;
@@ -84,8 +84,8 @@ void my_vector::resize(size_t x) {
 	}
 	if (is_small_num >= 1) {
 		if (x <= 1) return;
-		int64_t temp = num;
-		store = make_shared<vector<int64_t>>(x);
+		int32_t temp = num;
+		store = make_shared<vector<int32_t>>(x);
 		if (is_small_num == 1)
 			store->at(0) = temp;
 		is_small_num = 0;
@@ -116,16 +116,18 @@ my_vector& my_vector::operator=(my_vector const& other) {
 	return *this;
 }
 
-my_vector& my_vector::operator=(std::vector<int64_t> const& other) {
-	if (other.size() == 1) {
-		this->is_small_num = true;
-		this->num = other.at(0);
+my_vector& my_vector::operator=(std::vector<int32_t> const& other) {
+	/* if (other.size() == 1) {
+		is_small_num = true;
+		num = other.at(0);
 	}
 	else {
-		this->is_small_num = false;
+		is_small_num = false;
 		for (size_t i = 0; i < other.size(); i++) {
-			this->store->at(i) = other.at(i);
+			store->at(i) = other.at(i);
 		}
 	}
+	*/
+	*store = other;
 	return *this;
 }
