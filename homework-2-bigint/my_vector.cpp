@@ -56,8 +56,9 @@ void my_vector::push_back(const int32_t& x) {
 }
 
 void my_vector::pop_back() {
-	if (is_small_num)
+	if (is_small_num) {
 		is_small_num = 2;
+	}
 	else
 	{
 		cow_copy();
@@ -96,7 +97,7 @@ void my_vector::resize(size_t x) {
 }
 
 bool my_vector::empty() const {
-	 if (is_small_num == 2 || (!is_small_num && !store->size())) return true;
+	if (is_small_num == 2 || (!is_small_num && !store->size())) return true;
 	// if (!size()) true;
 	return false;
 }
@@ -118,7 +119,8 @@ my_vector& my_vector::operator=(my_vector const& other) {
 }
 
 my_vector& my_vector::operator=(std::vector<int32_t> const& other) {
-
+	if (other.size() == 1) is_small_num = true;
+	else is_small_num = false;
 	store = make_shared<vector<int32_t>>(other);
 	
 	return *this;
